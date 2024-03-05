@@ -18,4 +18,4 @@ input.onButtonEvent(Button.B, input.buttonEventClick(), function () {
 })
 let y = 0
 let x = 0
-matrix.createArray(matrix.ePages.y64)
+matrix.init(matrix.ePages.y128, false)

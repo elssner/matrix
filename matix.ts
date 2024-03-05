@@ -2,26 +2,60 @@
 //% color=#0000BF icon="\uf108" block="Matrix" weight=20
 namespace matrix {
 
-    export const cx = 128 // Pixel (Bytes von links nach rechts)
-    //const cy = 64 // Pixel (8 Pixel pro Byte von unten nach oben); Pages (Zeilen von oben nach unten)
+    function i2cWriteBuffer(buf: Buffer, repeat: boolean = false) { pins.i2cWriteBuffer(0x3C, buf, repeat) }
 
-    //const cPages = cy >> 3 // 3 Bit rechts raus schieben: Division durch 8
     export const cOffset = 7 // Platz am Anfang des Buffer bevor die cx Pixel kommen
+    export const cx = 128 // Pixel (Bytes von links nach rechts)
     // 6 Bytes zur Cursor Positionierung vor den Daten + 1 Byte 0x40 Display Data
 
     export let qArray: Buffer[] = [] // leeres Array Elemente Typ Buffer
 
     export enum ePages {
-        y64 = 8,
-        y128 = 16
+        y128 = 16,
+        y64 = 8
     }
+
+    enum eCONTROL { // Co Continuation bit(7); D/C# Data/Command Selection bit(6); following by six "0"s
+        // CONTROL ist immer das 1. Byte im Buffer
+        x00_xCom = 0x00, // im selben Buffer folgen nur Command Bytes ohne CONTROL dazwischen
+        x80_1Com = 0x80, // im selben Buffer nach jedem Command ein neues CONTROL [0x00 | 0x80 | 0x40]
+        x40_Data = 0x40  // im selben Buffer folgen nur Display-Data Bytes ohne CONTROL dazwischen
+    }
+
+
 
     //% group="beim Start"
     //% block
-    export function createArray(pages: ePages) {
-        for (let page = 0; page < pages; page++) { // Page 0..15
-            qArray.push(Buffer.create(cOffset + cx)) // Array aus 8 oder 16 Buffern je 128 Byte
+    export function init(pPages: ePages, pInvert = false) {
+        let bu: Buffer
+        // pro Page einen Buffer(7+128) an Array anfügen (push)
+        for (let page = 0; page < pPages; page++) { // Page 0..15 oder 0..7
+            bu = Buffer.create(cOffset + cx)
+            bu.fill(0)
+
+            // Cursor Positionierung an den Anfang jeder Page
+            bu.setUint8(0, eCONTROL.x80_1Com) // CONTROL+1Command
+            bu.setUint8(1, 0xB0 | page & 0x0F) // page number 0-7 B0-B7 - beim 128x128 Display 0x0F
+            // x (Spalte) 7 Bit 0..127 ist immer 0
+            bu.setUint8(2, eCONTROL.x80_1Com) // CONTROL+1Command
+            bu.setUint8(3, 0x00) // lower start column address 0x00-0x0F 4 Bit
+            bu.setUint8(4, eCONTROL.x80_1Com) // CONTROL+1Command
+            bu.setUint8(5, 0x10) // upper start column address 0x10-0x17 3 Bit
+
+            // nach 0x40 folgen die Daten
+            bu.setUint8(6, eCONTROL.x40_Data) // CONTROL Byte 0x40: Display Data
+
+            qArray.push(bu) // Array aus 8 oder 16 Buffern je 128 Byte
         }
+
+        // Display initialisieren
+        bu = Buffer.create(3)   // muss Anzahl der folgenden setUint8 entsprechen
+        bu.setUint8(0, eCONTROL.x00_xCom) // CONTROL Byte 0x00: folgende Bytes (im selben Buffer) sind alle command und kein CONTROL
+        bu.setUint8(1, (pInvert ? 0xA7 : 0xA6))  // Set display not inverted / A6 Normal A7 Inverse display
+        bu.setUint8(2, 0xAF)  // Set display ON (0xAE sleep mode)
+
+        i2cWriteBuffer(bu)
+        control.waitMicros(100000) // 100ms Delay Recommended
     }
 
 
