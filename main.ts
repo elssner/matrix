@@ -1,11 +1,11 @@
 input.onButtonEvent(Button.A, input.buttonEventClick(), function () {
-    basic.showNumber(matrix.getArray().length)
+    matrix.setPixel(127, 63, true)
+    matrix.writeMatrix()
 })
 input.onButtonEvent(Button.AB, input.buttonEventClick(), function () {
     x = 2
     y = 0
     matrix.setPixel(x, y, true)
-    basic.showNumber(matrix.getArrayElement(Math.trunc(y / 8))[matrix.getOffset() + x])
     if (matrix.getPixel(x, y)) {
         basic.setLedColor(0x00ff00)
     } else {
@@ -13,8 +13,9 @@ input.onButtonEvent(Button.AB, input.buttonEventClick(), function () {
     }
 })
 input.onButtonEvent(Button.B, input.buttonEventClick(), function () {
-    basic.showNumber(matrix.getArrayElement(0).length)
+    matrix.setPixel(127, 63, false)
+    matrix.writeMatrix()
 })
 let y = 0
 let x = 0
-matrix.createArray()
+matrix.createArray(matrix.ePages.y64)

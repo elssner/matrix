@@ -15,8 +15,32 @@ namespace matrix {
 
     // ========== group="Display"
 
+    //% group="Display"
+    //% block
+    export function writeMatrix() {
+        let bu: Buffer
+        for (let page = 0; page < qArray.length; page++) { // qArray.length ist die Anzahl der Pages 8 oder 16
+            bu = qArray[page]
 
+            // Cursor Positionierung an den Anfang jeder Page
+            bu.setUint8(0, eCONTROL.x80_1Com) // CONTROL+1Command
+            bu.setUint8(1, 0xB0 | page & 0x0F) // page number 0-7 B0-B7 - beim 128x128 Display 0x0F
+            // x (Spalte) 7 Bit 0..127 ist immer 0
+            bu.setUint8(2, eCONTROL.x80_1Com) // CONTROL+1Command
+            bu.setUint8(3, 0x00) // lower start column address 0x00-0x0F 4 Bit
+            bu.setUint8(4, eCONTROL.x80_1Com) // CONTROL+1Command
+            bu.setUint8(5, 0x10) // upper start column address 0x10-0x17 3 Bit
 
+            // nach 0x40 folgen die Daten
+            bu.setUint8(6, eCONTROL.x40_Data) // CONTROL Byte 0x40: Display Data
+
+            i2cWriteBuffer(bu)
+            control.waitMicros(50)
+        }
+
+    }
+
+/* 
     //% group="Display"
     //% block="Display löschen || von Zeile %vonZeile bis Zeile %bisZeile mit Bitmuster %charcode" weight=2
     //% vonZeile.min=0 vonZeile.max=15 vonZeile.defl=0
@@ -44,7 +68,7 @@ namespace matrix {
         // schreibt in den Buffer ab offset 6 Byte (CONTROL und Command für setCursor)
         // Buffer muss vorher die richtige Länge haben
         bu.setUint8(offset++, eCONTROL.x80_1Com) // CONTROL+1Command
-        bu.setUint8(offset++, 0xB0 | row & 0x07)      // page number 0-7 B0-B7
+        bu.setUint8(offset++, 0xB0 | row & 0x0F)      // page number 0-7 B0-B7 - beim 128x128 Display 0x0F
         bu.setUint8(offset++, eCONTROL.x80_1Com) // CONTROL+1Command
         bu.setUint8(offset++, 0x00 | col << 3 & 0x0F) // (col % 16) lower start column address 0x00-0x0F 4 Bit
         bu.setUint8(offset++, eCONTROL.x80_1Com) // CONTROL+1Command
@@ -52,7 +76,7 @@ namespace matrix {
         return offset
         //                    0x40               // CONTROL+Display Data
     }
-
+ */
 
 
     // ========== group="Display Command" advanced=true
@@ -156,7 +180,9 @@ namespace matrix {
 
 
 
-    export function i2cWriteBuffer(buf: Buffer, repeat: boolean = false) {
+    // ======== private
+
+    function i2cWriteBuffer(buf: Buffer, repeat: boolean = false) {
         pins.i2cWriteBuffer(cI2CADDR, buf, repeat)
     }
 

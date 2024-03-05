@@ -1,20 +1,26 @@
-// Gib deinen Code hier ein
+
+//% color=#0000BF icon="\uf108" block="Matrix" weight=20
 namespace matrix {
 
     export const cx = 128 // Pixel (Bytes von links nach rechts)
-    const cy = 128 // Pixel (8 Pixel pro Byte von unten nach oben); Pages (Zeilen von oben nach unten)
+    //const cy = 64 // Pixel (8 Pixel pro Byte von unten nach oben); Pages (Zeilen von oben nach unten)
 
-    export const cPages = cy >> 3 // 3 Bit rechts raus schieben: Division durch 8
+    //const cPages = cy >> 3 // 3 Bit rechts raus schieben: Division durch 8
     export const cOffset = 7 // Platz am Anfang des Buffer bevor die cx Pixel kommen
     // 6 Bytes zur Cursor Positionierung vor den Daten + 1 Byte 0x40 Display Data
 
-    let qArray: Buffer[] = [] // leeres Array Elemente Typ Buffer
+    export let qArray: Buffer[] = [] // leeres Array Elemente Typ Buffer
+
+    export enum ePages {
+        y64 = 8,
+        y128 = 16
+    }
 
     //% group="beim Start"
     //% block
-    export function createArray() {
-        for (let page = 0; page < cy / 8; page++) { // Page 0..15
-            qArray.push(Buffer.create(cOffset + cx)) // Array aus 16 Buffern je 128 Byte
+    export function createArray(pages: ePages) {
+        for (let page = 0; page < pages; page++) { // Page 0..15
+            qArray.push(Buffer.create(cOffset + cx)) // Array aus 8 oder 16 Buffern je 128 Byte
         }
     }
 
@@ -26,13 +32,13 @@ namespace matrix {
     //% block
     export function getArray() { return qArray }
 
-    //% group="Array / Buffer"
-    //% block
-    export function getOffset() { return cOffset }
+    // group="Array / Buffer"
+    // block
+    //export function getOffset() { return cOffset }
 
-    //% group="Array / Buffer"
-    //% block="get Page (Buffer aus Array) %page"
-    export function getArrayElement(page: number): number[] { return qArray[page].toArray(NumberFormat.UInt8LE) }
+    // group="Array / Buffer"
+    // block="get Page (Buffer aus Array) %page"
+    //export function getArrayElement(page: number): number[] { return qArray[page].toArray(NumberFormat.UInt8LE) }
 
 
 
@@ -54,8 +60,8 @@ namespace matrix {
     //% group="Pixel"
     //% block weight=3
     export function setPixel(x: number, y: number, bit: boolean) {
-        if (between(x, 0, cx - 1) && between(y, 0, cy - 1)) {
-            let exp = 7 - (y & 7) // bitwise AND letze 3 Bit = 0..7 // 7-0=7 2^7=128
+        if (between(x, 0, cx - 1) && between(y, 0, qArray.length * 8 - 1)) {
+            let exp = y & 7 // bitwise AND letze 3 Bit = 0..7
             if (bit)
                 qArray[y >> 3][cOffset + x] |= (2 ** exp) // um 3 Bit nach rechts entspricht Division durch 8
             else
@@ -66,7 +72,7 @@ namespace matrix {
     //% group="Pixel"
     //% block weight=1
     export function getPixel(x: number, y: number) {
-        return (qArray[y >> 3][cOffset + x] & (2 ** (7 - (y & 7)))) != 0
+        return (qArray[y >> 3][cOffset + x] & (2 ** (y & 7))) != 0
     }
 
 
