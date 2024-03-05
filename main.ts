@@ -5,7 +5,7 @@ input.onButtonEvent(Button.AB, input.buttonEventClick(), function () {
     x = 2
     y = 0
     matrix.setPixel(x, y, true)
-    basic.showNumber(matrix.getArrayElement(Math.trunc(y / 8))[x])
+    basic.showNumber(matrix.getArrayElement(Math.trunc(y / 8))[matrix.getOffset() + x])
     if (matrix.getPixel(x, y)) {
         basic.setLedColor(0x00ff00)
     } else {

@@ -11,7 +11,8 @@
         "main.ts",
         "README.md",
         "custom.ts",
-        "matix.ts"
+        "matix.ts",
+        "i2c.ts"
     ],
     "testFiles": [
         "test.ts"
@@ -23,5 +24,5 @@
     "supportedTargets": [
         "calliopemini"
     ],
-    "preferredEditor": "blocksprj"
+    "preferredEditor": "tsprj"
 }
