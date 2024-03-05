@@ -13,6 +13,48 @@ namespace matrix {
 
 
 
+    // ========== group="Display"
+
+
+
+    //% group="Display"
+    //% block="Display löschen || von Zeile %vonZeile bis Zeile %bisZeile mit Bitmuster %charcode" weight=2
+    //% vonZeile.min=0 vonZeile.max=15 vonZeile.defl=0
+    //% bisZeile.min=0 bisZeile.max=15 bisZeile.defl=15
+    //% charcode.min=0 charcode.max=255 charcode.defl=0
+    //% inlineInputMode=inline
+    export function clearScreen(vonZeile?: number, bisZeile?: number, charcode?: number) {
+        if (between(vonZeile, 0, cPages - 1) && between(bisZeile, 0, cPages - 1)) {
+            let bu = Buffer.create(cOffset + cx) // 7+128=135
+            let offset = setCursorBuffer6(bu, 0, 0, 0)
+            bu.setUint8(offset++, eCONTROL.x40_Data) // CONTROL+DisplayData
+            bu.fill(charcode & 0xFF, offset++, cx)   // 128 Byte füllen eine Zeile pixelweise
+
+            for (let page = vonZeile; page <= bisZeile; page++) {
+                bu.setUint8(1, 0xB0 | page) // an offset=1 steht die page number (Zeile 0-7)
+                // sendet den selben Buffer 8 Mal mit Änderung an 1 Byte
+                // true gibt den i2c Bus dazwischen nicht für andere Geräte frei
+                i2cWriteBuffer(bu, page < bisZeile) // Clear Screen
+            }
+            control.waitMicros(100000) // 100ms Delay Recommended
+        }
+    }
+
+    function setCursorBuffer6(bu: Buffer, offset: number, row: number, col: number) {
+        // schreibt in den Buffer ab offset 6 Byte (CONTROL und Command für setCursor)
+        // Buffer muss vorher die richtige Länge haben
+        bu.setUint8(offset++, eCONTROL.x80_1Com) // CONTROL+1Command
+        bu.setUint8(offset++, 0xB0 | row & 0x07)      // page number 0-7 B0-B7
+        bu.setUint8(offset++, eCONTROL.x80_1Com) // CONTROL+1Command
+        bu.setUint8(offset++, 0x00 | col << 3 & 0x0F) // (col % 16) lower start column address 0x00-0x0F 4 Bit
+        bu.setUint8(offset++, eCONTROL.x80_1Com) // CONTROL+1Command
+        bu.setUint8(offset++, 0x10 | col >> 1 & 0x07) // (col >> 4) upper start column address 0x10-0x17 3 Bit
+        return offset
+        //                    0x40               // CONTROL+Display Data
+    }
+
+
+
     // ========== group="Display Command" advanced=true
 
     //% group="Display Command" advanced=true

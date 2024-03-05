@@ -1,9 +1,13 @@
 // Gib deinen Code hier ein
 namespace matrix {
 
-    const cx = 128 // Pixel (Bytes von links nach rechts)
+    export const cx = 128 // Pixel (Bytes von links nach rechts)
     const cy = 128 // Pixel (8 Pixel pro Byte von unten nach oben); Pages (Zeilen von oben nach unten)
-    const cOffset = 5 // Platz am Anfang des Buffer bevor die cx Pixel kommen
+
+    export const cPages = cy >> 3 // 3 Bit rechts raus schieben: Division durch 8
+    export const cOffset = 7 // Platz am Anfang des Buffer bevor die cx Pixel kommen
+    // 6 Bytes zur Cursor Positionierung vor den Daten + 1 Byte 0x40 Display Data
+
     let qArray: Buffer[] = [] // leeres Array Elemente Typ Buffer
 
     //% group="beim Start"
