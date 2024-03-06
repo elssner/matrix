@@ -11,6 +11,7 @@ input.onButtonEvent(Button.AB, input.buttonEventClick(), function () {
     } else {
         basic.setLedColor(0xff0000)
     }
+    matrix.writeMatrix(0, 15)
 })
 input.onButtonEvent(Button.B, input.buttonEventClick(), function () {
     matrix.setPixel(127, 63, false)
@@ -18,4 +19,4 @@ input.onButtonEvent(Button.B, input.buttonEventClick(), function () {
 })
 let y = 0
 let x = 0
-matrix.init(matrix.ePages.y128, false)
+matrix.init(matrix.ePages.y128, true)

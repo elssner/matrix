@@ -10,7 +10,6 @@
         "main.blocks",
         "main.ts",
         "README.md",
-        "custom.ts",
         "matix.ts",
         "i2c.ts"
     ],
@@ -18,11 +17,11 @@
         "test.ts"
     ],
     "targetVersions": {
-        "target": "6.0.27",
+        "target": "6.0.28",
         "targetId": "calliopemini"
     },
     "supportedTargets": [
         "calliopemini"
     ],
-    "preferredEditor": "blocksprj"
+    "preferredEditor": "tsprj"
 }

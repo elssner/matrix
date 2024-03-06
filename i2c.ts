@@ -17,7 +17,7 @@ namespace matrix {
 
     //% group="Display"
     //% block
-    export function writeMatrix() {
+     function writeMatrix() {
         let bu: Buffer
         for (let page = 0; page < qArray.length; page++) { // qArray.length ist die Anzahl der Pages 8 oder 16
             bu = qArray[page]
@@ -80,7 +80,7 @@ namespace matrix {
 
     //% group="Display Command" advanced=true
     //% block
-    export function init16(pInvert = false) {
+     function init16(pInvert = false) {
         let bu = Buffer.create(3)   // muss Anzahl der folgenden setUint8 entsprechen
         let offset = 0               // Buffer offset (offset++ liest erst den Wert und erhöht ihn dann)
 

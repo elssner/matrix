@@ -1,7 +1,12 @@
 
 //% color=#0000BF icon="\uf108" block="Matrix" weight=20
-namespace matrix {
+namespace matrix
+/* 240306 Lutz Elßner
+https://wiki.seeedstudio.com/Grove-OLED-Display-1.12-SH1107_V3.0/
+https://files.seeedstudio.com/wiki/Grove-OLED-Display-1.12-(SH1107)_V3.0/res/SH1107V2.1.pdf
+*/ {
 
+    // Display (SH1107) kann nur Write und kein Read
     function i2cWriteBuffer(buf: Buffer, repeat: boolean = false) { pins.i2cWriteBuffer(0x3C, buf, repeat) }
 
     export const cOffset = 7 // Platz am Anfang des Buffer bevor die cx Pixel kommen
@@ -11,7 +16,9 @@ namespace matrix {
     export let qArray: Buffer[] = [] // leeres Array Elemente Typ Buffer
 
     export enum ePages {
+        //% block="128x128"
         y128 = 16,
+        //% block="128x64"
         y64 = 8
     }
 
@@ -24,8 +31,11 @@ namespace matrix {
 
 
 
+    // ========== group="beim Start"
+
     //% group="beim Start"
-    //% block
+    //% block="init Display %pPages invert %pInvert"
+    //% pInvert.shadow="toggleOnOff"
     export function init(pPages: ePages, pInvert = false) {
         let bu: Buffer
         // pro Page einen Buffer(7+128) an Array anfügen (push)
@@ -33,6 +43,7 @@ namespace matrix {
             bu = Buffer.create(cOffset + cx)
             bu.fill(0)
 
+            // der Anfang vom Buffer 0..6 wird initialisiert und ändert sich nicht mehr; Daten ab Offset 7..135
             // Cursor Positionierung an den Anfang jeder Page
             bu.setUint8(0, eCONTROL.x80_1Com) // CONTROL+1Command
             bu.setUint8(1, 0xB0 | page & 0x0F) // page number 0-7 B0-B7 - beim 128x128 Display 0x0F
@@ -60,25 +71,9 @@ namespace matrix {
 
 
 
-    // ========== group="Array / Buffer"
-
-    //% group="Array / Buffer"
-    //% block
-    export function getArray() { return qArray }
-
-    // group="Array / Buffer"
-    // block
-    //export function getOffset() { return cOffset }
-
-    // group="Array / Buffer"
-    // block="get Page (Buffer aus Array) %page"
-    //export function getArrayElement(page: number): number[] { return qArray[page].toArray(NumberFormat.UInt8LE) }
-
-
-
     // ========== group="Pixel"
 
-    //% group="Pixel"
+    //% group="Pixel" deprecated=true
     //% block weight=4
     export function setPixel1(x: number, y: number, bit: boolean) {
         let page = Math.trunc(y / 8) // Page = y / 8
@@ -111,12 +106,44 @@ namespace matrix {
 
 
 
+    //% group="Display"
+    //% block="write Buffer || von Zeile %vonZeile bis Zeile %bisZeile"
+    //% vonZeile.min=0 vonZeile.max=15 vonZeile.defl=0
+    //% bisZeile.min=0 bisZeile.max=15 bisZeile.defl=15
+    export function writeMatrix(vonZeile = 0, bisZeile = 15) {
+        if (vonZeile > qArray.length - 1) vonZeile = qArray.length - 1
+        if (bisZeile > qArray.length - 1) bisZeile = qArray.length - 1
+        if (vonZeile > bisZeile) vonZeile = bisZeile
+
+        for (let page = vonZeile; page <= bisZeile; page++) { // qArray.length ist die Anzahl der Pages 8 oder 16
+            i2cWriteBuffer(qArray[page])
+            //control.waitMicros(50)
+        }
+        control.waitMicros(50)
+    }
+
+
+
+
+
+    // ========== group="Array: Buffer[]" advanced=true
+
+    //% group="Array: Buffer[]" advanced=true
+    //% block
+    export function getArray() { return qArray }
+
+
     // ========== group="Logik (boolean)" advanced=true
 
     //% group="Logik (boolean)" advanced=true
-    //% block="%i0 zwischen %i1 und %i2" weight=1
+    //% block="%i0 zwischen %i1 und %i2"
     export function between(i0: number, i1: number, i2: number): boolean {
         return (i0 >= i1 && i0 <= i2)
     }
+
+
+    //% group="Text // Kommentar" advanced=true
+    //% block="// %text"
+    export function comment(text: string): void { }
 
 }
