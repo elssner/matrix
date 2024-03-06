@@ -11,11 +11,23 @@ input.onButtonEvent(Button.AB, input.buttonEventClick(), function () {
     } else {
         basic.setLedColor(0xff0000)
     }
-    matrix.writeMatrix(0, 15)
+    matrix.writeMatrix()
 })
 input.onButtonEvent(Button.B, input.buttonEventClick(), function () {
     matrix.setPixel(127, 63, false)
     matrix.writeMatrix()
+})
+input.onButtonEvent(Button.A, input.buttonEventValue(ButtonEvent.Hold), function () {
+    for (let Index = 0; Index <= 127; Index++) {
+        matrix.setPixel(Index, Index, true)
+    }
+    matrix.writeMatrix()
+})
+input.onButtonEvent(Button.B, input.buttonEventValue(ButtonEvent.Hold), function () {
+    for (let Index = 0; Index <= 127; Index++) {
+        matrix.setPixel(Index, Index, false)
+        matrix.writeMatrix()
+    }
 })
 let y = 0
 let x = 0

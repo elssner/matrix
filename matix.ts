@@ -74,7 +74,7 @@ https://files.seeedstudio.com/wiki/Grove-OLED-Display-1.12-(SH1107)_V3.0/res/SH1
     // ========== group="Pixel"
 
     //% group="Pixel" deprecated=true
-    //% block weight=4
+    //% block weight=9
     export function setPixel1(x: number, y: number, bit: boolean) {
         let page = Math.trunc(y / 8) // Page = y / 8
         let exp = y % 8 // Rest von Division durch 8 = Bit 0..7 im Byte
@@ -87,7 +87,7 @@ https://files.seeedstudio.com/wiki/Grove-OLED-Display-1.12-(SH1107)_V3.0/res/SH1
     }
 
     //% group="Pixel"
-    //% block weight=3
+    //% block weight=8
     export function setPixel(x: number, y: number, bit: boolean) {
         if (between(x, 0, cx - 1) && between(y, 0, qArray.length * 8 - 1)) {
             let exp = y & 7 // bitwise AND letze 3 Bit = 0..7
@@ -99,15 +99,21 @@ https://files.seeedstudio.com/wiki/Grove-OLED-Display-1.12-(SH1107)_V3.0/res/SH1
     }
 
     //% group="Pixel"
-    //% block weight=1
+    //% block weight=6
     export function getPixel(x: number, y: number) {
         return (qArray[y >> 3][cOffset + x] & (2 ** (y & 7))) != 0
+    }
+
+    //% group="Pixel"
+    //% block weight=4
+    export function clearPage(page: number) {
+        qArray[page].fill(0, cOffset) // löscht Buffer ab 7 bis zum Ende
     }
 
 
 
     //% group="Display"
-    //% block="write Buffer || from Page %fromPage to Page %toPage"
+    //% block="write Matrix || from Page %fromPage to Page %toPage"
     //% fromPage.min=0 fromPage.max=15 fromPage.defl=0
     //% toPage.min=0 toPage.max=15 toPage.defl=15
     export function writeMatrix(fromPage = 0, toPage = 15) {
