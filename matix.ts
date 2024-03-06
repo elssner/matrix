@@ -9,11 +9,11 @@ https://files.seeedstudio.com/wiki/Grove-OLED-Display-1.12-(SH1107)_V3.0/res/SH1
     // Display (SH1107) kann nur Write und kein Read
     function i2cWriteBuffer(buf: Buffer, repeat: boolean = false) { pins.i2cWriteBuffer(0x3C, buf, repeat) }
 
-    export const cOffset = 7 // Platz am Anfang des Buffer bevor die cx Pixel kommen
-    export const cx = 128 // Pixel (Bytes von links nach rechts)
+    const cOffset = 7 // Platz am Anfang des Buffer bevor die cx Pixel kommen
+    const cx = 128 // Pixel (Bytes von links nach rechts)
     // 6 Bytes zur Cursor Positionierung vor den Daten + 1 Byte 0x40 Display Data
 
-    export let qArray: Buffer[] = [] // leeres Array Elemente Typ Buffer
+    let qArray: Buffer[] = [] // leeres Array Elemente Typ Buffer
 
     export enum ePages {
         //% block="128x128"
@@ -107,21 +107,20 @@ https://files.seeedstudio.com/wiki/Grove-OLED-Display-1.12-(SH1107)_V3.0/res/SH1
 
 
     //% group="Display"
-    //% block="write Buffer || von Zeile %vonZeile bis Zeile %bisZeile"
-    //% vonZeile.min=0 vonZeile.max=15 vonZeile.defl=0
-    //% bisZeile.min=0 bisZeile.max=15 bisZeile.defl=15
-    export function writeMatrix(vonZeile = 0, bisZeile = 15) {
-        if (vonZeile > qArray.length - 1) vonZeile = qArray.length - 1
-        if (bisZeile > qArray.length - 1) bisZeile = qArray.length - 1
-        if (vonZeile > bisZeile) vonZeile = bisZeile
+    //% block="write Buffer || from Page %fromPage to Page %toPage"
+    //% fromPage.min=0 fromPage.max=15 fromPage.defl=0
+    //% toPage.min=0 toPage.max=15 toPage.defl=15
+    export function writeMatrix(fromPage = 0, toPage = 15) {
+        if (fromPage > qArray.length - 1) fromPage = qArray.length - 1
+        if (toPage > qArray.length - 1) toPage = qArray.length - 1
+        if (fromPage > toPage) fromPage = toPage
 
-        for (let page = vonZeile; page <= bisZeile; page++) { // qArray.length ist die Anzahl der Pages 8 oder 16
+        for (let page = fromPage; page <= toPage; page++) { // qArray.length ist die Anzahl der Pages 8 oder 16
             i2cWriteBuffer(qArray[page])
             //control.waitMicros(50)
         }
         control.waitMicros(50)
     }
-
 
 
 
@@ -136,7 +135,7 @@ https://files.seeedstudio.com/wiki/Grove-OLED-Display-1.12-(SH1107)_V3.0/res/SH1
     // ========== group="Logik (boolean)" advanced=true
 
     //% group="Logik (boolean)" advanced=true
-    //% block="%i0 zwischen %i1 und %i2"
+    //% block="%i0 between %i1 and %i2"
     export function between(i0: number, i1: number, i2: number): boolean {
         return (i0 >= i1 && i0 <= i2)
     }

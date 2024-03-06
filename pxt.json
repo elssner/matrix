@@ -10,8 +10,7 @@
         "main.blocks",
         "main.ts",
         "README.md",
-        "matix.ts",
-        "i2c.ts"
+        "matix.ts"
     ],
     "testFiles": [
         "test.ts"
