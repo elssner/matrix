@@ -105,11 +105,52 @@ https://files.seeedstudio.com/wiki/Grove-OLED-Display-1.12-(SH1107)_V3.0/res/SH1
     }
 
     //% group="Pixel"
-    //% block weight=4
-    export function clearPage(page: number) {
-        qArray[page].fill(0, cOffset) // löscht Buffer ab 7 bis zum Ende
+    //% block="clearPage || %page" weight=4
+    //% page.min=0 page.max=15
+    export function clearPage(page?: number) {
+        if (page != undefined)
+            qArray[page].fill(0, cOffset) // löscht Buffer ab 7 bis zum Ende
+        else
+            for (let y = 0; y < qArray.length; y++) {
+                clearPage(y)
+            }
     }
 
+    //% group="Pixel"
+    //% block="rasterCircle Mittelpunkt x %x0 y %y0 Radius %radius" weight=3
+    export function rasterCircle(x0: number, y0: number, radius: number) {
+        // https://de.wikipedia.org/wiki/Bresenham-Algorithmus
+        let f = 1 - radius;
+        let ddF_x = 0;
+        let ddF_y = -2 * radius;
+        let x = 0;
+        let y = radius;
+
+        setPixel(x0, y0 + radius, true);
+        setPixel(x0, y0 - radius, true);
+        setPixel(x0 + radius, y0, true);
+        setPixel(x0 - radius, y0, true);
+
+        while (x < y) {
+            if (f >= 0) {
+                y -= 1;
+                ddF_y += 2;
+                f += ddF_y;
+            }
+            x += 1;
+            ddF_x += 2;
+            f += ddF_x + 1;
+
+            setPixel(x0 + x, y0 + y, true);
+            setPixel(x0 - x, y0 + y, true);
+            setPixel(x0 + x, y0 - y, true);
+            setPixel(x0 - x, y0 - y, true);
+            setPixel(x0 + y, y0 + x, true);
+            setPixel(x0 - y, y0 + x, true);
+            setPixel(x0 + y, y0 - x, true);
+            setPixel(x0 - y, y0 - x, true);
+        }
+    }
 
 
     //% group="Display"

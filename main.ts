@@ -1,6 +1,6 @@
 input.onButtonEvent(Button.A, input.buttonEventClick(), function () {
-    matrix.comment("1 Pixel an")
-    matrix.setPixel(127, 63, true)
+    matrix.rasterCircle(64, 64, 32)
+    matrix.rasterCircle(64, 64, 34)
     matrix.writeMatrix()
 })
 input.onButtonEvent(Button.AB, input.buttonEventClick(), function () {
@@ -16,8 +16,7 @@ input.onButtonEvent(Button.AB, input.buttonEventClick(), function () {
     matrix.writeMatrix()
 })
 input.onButtonEvent(Button.B, input.buttonEventClick(), function () {
-    matrix.comment("1 Pixel aus")
-    matrix.setPixel(127, 63, false)
+    matrix.clearPage()
     matrix.writeMatrix()
 })
 input.onButtonEvent(Button.A, input.buttonEventValue(ButtonEvent.Hold), function () {
@@ -45,3 +44,4 @@ function Konfiguration () {
 let y = 0
 let x = 0
 matrix.init(matrix.ePages.y128, true)
+matrix.clearPage()
