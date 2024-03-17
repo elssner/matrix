@@ -71,9 +71,39 @@ https://files.seeedstudio.com/wiki/Grove-OLED-Display-1.12-(SH1107)_V3.0/res/SH1
 
 
 
-    // ========== group="Pixel"
+    // ========== group="Matrix (Buffer)"
 
-    //% group="Pixel" deprecated=true
+    // group="Matrix"
+    // block="clearPage || %page" weight=4
+    // page.min=0 page.max=15
+    /* export function clearPage(page?: number) {
+        if (page != undefined)
+            qArray[page].fill(0, cOffset) // löscht Buffer ab 7 bis zum Ende
+        else
+            for (let y = 0; y < qArray.length; y++) {
+                clearPage(y)
+            }
+    } */
+
+    //% group="Matrix (Buffer)"
+    //% block="clear Matrix || from Page %fromPage to Page %toPage" weight=3
+    //% fromPage.min=0 fromPage.max=15 fromPage.defl=0
+    //% toPage.min=0 toPage.max=15 toPage.defl=15
+    export function clearMatrix(fromPage = 0, toPage = 15) {
+        if (fromPage > qArray.length - 1) fromPage = qArray.length - 1
+        if (toPage > qArray.length - 1) toPage = qArray.length - 1
+        if (fromPage > toPage) fromPage = toPage
+
+        for (let page = fromPage; page <= toPage; page++) { // qArray.length ist die Anzahl der Pages 8 oder 16
+            qArray[page].fill(0, cOffset) // löscht Buffer ab 7 bis zum Ende
+        }
+    }
+
+
+
+    // ========== group="Pixel (Buffer)"
+
+    //% group="Pixel (Buffer)" deprecated=true
     //% block weight=9
     export function setPixel1(x: number, y: number, bit: boolean) {
         let page = Math.trunc(y / 8) // Page = y / 8
@@ -86,39 +116,51 @@ https://files.seeedstudio.com/wiki/Grove-OLED-Display-1.12-(SH1107)_V3.0/res/SH1
             bu[cOffset + x] &= ~(2 ** exp)
     }
 
-    //% group="Pixel"
+    //% group="Pixel (Buffer)"
     //% block weight=8
-    export function setPixel(x: number, y: number, bit: boolean) {
+    //% pixel.defl=1
+    export function setPixel(x: number, y: number, pixel: boolean) {
         if (between(x, 0, cx - 1) && between(y, 0, qArray.length * 8 - 1)) {
             let exp = y & 7 // bitwise AND letze 3 Bit = 0..7
-            if (bit)
+            if (pixel)
                 qArray[y >> 3][cOffset + x] |= (2 ** exp) // um 3 Bit nach rechts entspricht Division durch 8
             else
                 qArray[y >> 3][cOffset + x] &= ~(2 ** exp)
         }
     }
 
-    //% group="Pixel"
+    //% group="Pixel (Buffer)"
     //% block weight=6
     export function getPixel(x: number, y: number) {
         return (qArray[y >> 3][cOffset + x] & (2 ** (y & 7))) != 0
     }
 
-    //% group="Pixel"
-    //% block="clearPage || %page" weight=4
-    //% page.min=0 page.max=15
-    export function clearPage(page?: number) {
-        if (page != undefined)
-            qArray[page].fill(0, cOffset) // löscht Buffer ab 7 bis zum Ende
-        else
-            for (let y = 0; y < qArray.length; y++) {
-                clearPage(y)
-            }
+
+
+    //% group="Pixel (Buffer)"
+    //% block="Linie x0 %x0 y0 %y0  x1 %x1 y1 %y1 || pixel %pixel" weight=3
+    //% pixel.defl=1
+    //% inlineInputMode=inline
+    export function line(x0: number, y0: number, x1: number, y1: number, pixel?: boolean) {
+        // https://de.wikipedia.org/wiki/Bresenham-Algorithmus
+        let dx = Math.abs(x1 - x0), sx = x0 < x1 ? 1 : -1;
+        let dy = -Math.abs(y1 - y0), sy = y0 < y1 ? 1 : -1;
+        let err = dx + dy, e2; // error value e_xy
+
+        while (true) {
+            setPixel(x0, y0, pixel)
+            if (x0 == x1 && y0 == y1) break;
+            e2 = 2 * err;
+            if (e2 > dy) { err += dy; x0 += sx; } // e_xy+e_x > 0
+            if (e2 < dx) { err += dx; y0 += sy; } // e_xy+e_y < 0
+        }
     }
 
-    //% group="Pixel"
-    //% block="rasterCircle Mittelpunkt x %x0 y %y0 Radius %radius" weight=3
-    export function rasterCircle(x0: number, y0: number, radius: number) {
+    //% group="Pixel (Buffer)"
+    //% block="Kreis Mittelpunkt x %x0 y %y0 Radius %radius || pixel %pixel" weight=2
+    //% pixel.defl=1
+    //% inlineInputMode=inline
+    export function rasterCircle(x0: number, y0: number, radius: number, pixel?: boolean) {
         // https://de.wikipedia.org/wiki/Bresenham-Algorithmus
         let f = 1 - radius;
         let ddF_x = 0;
@@ -126,10 +168,10 @@ https://files.seeedstudio.com/wiki/Grove-OLED-Display-1.12-(SH1107)_V3.0/res/SH1
         let x = 0;
         let y = radius;
 
-        setPixel(x0, y0 + radius, true);
-        setPixel(x0, y0 - radius, true);
-        setPixel(x0 + radius, y0, true);
-        setPixel(x0 - radius, y0, true);
+        setPixel(x0, y0 + radius, pixel);
+        setPixel(x0, y0 - radius, pixel);
+        setPixel(x0 + radius, y0, pixel);
+        setPixel(x0 - radius, y0, pixel);
 
         while (x < y) {
             if (f >= 0) {
@@ -141,17 +183,20 @@ https://files.seeedstudio.com/wiki/Grove-OLED-Display-1.12-(SH1107)_V3.0/res/SH1
             ddF_x += 2;
             f += ddF_x + 1;
 
-            setPixel(x0 + x, y0 + y, true);
-            setPixel(x0 - x, y0 + y, true);
-            setPixel(x0 + x, y0 - y, true);
-            setPixel(x0 - x, y0 - y, true);
-            setPixel(x0 + y, y0 + x, true);
-            setPixel(x0 - y, y0 + x, true);
-            setPixel(x0 + y, y0 - x, true);
-            setPixel(x0 - y, y0 - x, true);
+            setPixel(x0 + x, y0 + y, pixel);
+            setPixel(x0 - x, y0 + y, pixel);
+            setPixel(x0 + x, y0 - y, pixel);
+            setPixel(x0 - x, y0 - y, pixel);
+            setPixel(x0 + y, y0 + x, pixel);
+            setPixel(x0 - y, y0 + x, pixel);
+            setPixel(x0 + y, y0 - x, pixel);
+            setPixel(x0 - y, y0 - x, pixel);
         }
     }
 
+
+
+    // ========== group="Display"
 
     //% group="Display"
     //% block="write Matrix || from Page %fromPage to Page %toPage"

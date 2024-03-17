@@ -1,6 +1,7 @@
 input.onButtonEvent(Button.A, input.buttonEventClick(), function () {
     matrix.rasterCircle(64, 64, 32)
     matrix.rasterCircle(64, 64, 34)
+    matrix.line(10, 40, 20, 30)
     matrix.writeMatrix()
 })
 input.onButtonEvent(Button.AB, input.buttonEventClick(), function () {
@@ -16,13 +17,13 @@ input.onButtonEvent(Button.AB, input.buttonEventClick(), function () {
     matrix.writeMatrix()
 })
 input.onButtonEvent(Button.B, input.buttonEventClick(), function () {
-    matrix.clearPage()
+    matrix.clearMatrix()
     matrix.writeMatrix()
 })
 input.onButtonEvent(Button.A, input.buttonEventValue(ButtonEvent.Hold), function () {
     matrix.comment("zeichnet Linie im Buffer")
     for (let Index = 0; Index <= 127; Index++) {
-        matrix.setPixel(Index, Index, true)
+        matrix.setPixel(Index, 0, false)
     }
     matrix.comment("schreibt 1 mal am Ende auf Display")
     matrix.writeMatrix()
@@ -44,4 +45,4 @@ function Konfiguration () {
 let y = 0
 let x = 0
 matrix.init(matrix.ePages.y128, true)
-matrix.clearPage()
+matrix.clearMatrix()
