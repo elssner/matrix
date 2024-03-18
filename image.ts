@@ -52,5 +52,14 @@ namespace matrix {
         return im
     }
 
+    //% group="Image Objekte" subcategory=Bilder
+    //% block="Bild 64x64" weight=5
+    //% imageLiteral=1 imageLiteralColumns=64 imageLiteralRows=64
+    //% shim=images::createImage
+    export function matrix64x64(i: string): Image {
+        const im = <Image><any>i;
+        return im
+    }
+
 
 }
