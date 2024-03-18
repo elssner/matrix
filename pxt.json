@@ -10,7 +10,8 @@
         "main.blocks",
         "main.ts",
         "README.md",
-        "matix.ts"
+        "matix.ts",
+        "image.ts"
     ],
     "testFiles": [
         "test.ts"

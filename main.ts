@@ -18,6 +18,25 @@ input.onButtonEvent(Button.AB, input.buttonEventClick(), function () {
 })
 input.onButtonEvent(Button.B, input.buttonEventClick(), function () {
     matrix.clearMatrix()
+    i1 = matrix.matrix16x16(`
+        . . . . . . . . . . . . . . . .
+        . . . . . . . . . . . . . . . .
+        # # . . . . . . . . . # . . . .
+        . . # . . . . . . . # . . . . .
+        . . # . . . . . . . . . # . . .
+        . . . # # . # # # # # # # # . .
+        . . . . . # . . # . . # # # . .
+        . . . . . # . . # . . # # # . .
+        . . . . . # . . # . . # # # . .
+        . . . . # # . . # . . # # # . .
+        . . . . . . . . # # # # # # . .
+        . . . . . . . . . . . . # # . .
+        . . . . . . . . . . . . # # . .
+        . . . . . . . . . . . . # # . .
+        . . . . . . # # # # . . # # . .
+        . . . . . . . . . . # # # # . .
+        `)
+    matrix.writeImageOLED(i1, 0, 0)
     matrix.writeMatrix()
 })
 input.onButtonEvent(Button.A, input.buttonEventValue(ButtonEvent.Hold), function () {
@@ -30,8 +49,8 @@ input.onButtonEvent(Button.A, input.buttonEventValue(ButtonEvent.Hold), function
 })
 input.onButtonEvent(Button.B, input.buttonEventValue(ButtonEvent.Hold), function () {
     matrix.comment("löscht Linie im Buffer")
-    for (let Index = 0; Index <= 127; Index++) {
-        matrix.setPixel(Index, Index, false)
+    for (let Index2 = 0; Index2 <= 127; Index2++) {
+        matrix.setPixel(Index2, Index2, false)
         matrix.comment("schreibt nach jedem Pixel das ganze Display")
         matrix.writeMatrix()
     }
@@ -42,6 +61,7 @@ function Konfiguration () {
     matrix.comment("Code Datei: matrix.ts")
     matrix.comment("Grove - OLED Display 1.12 (SH1107) V3.0 - SPI/IIC -3.3V/5V")
 }
+let i1: Image = null
 let y = 0
 let x = 0
 matrix.init(matrix.ePages.y128, true)
