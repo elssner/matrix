@@ -5,8 +5,9 @@ namespace matrix {
     // ========== group="Image in Buffer zeichnen" subcategory=Bilder
 
     //% group="Image in Buffer zeichnen" subcategory=Bilder
-    //% block="zeichne Matrix %im x %xpos y %ypos || 0-Pixel löschen %del"
+    //% block="zeichne Bild %im x %xpos y %ypos || 0-Pixel löschen %del"
     //% x.min=0 x.max=119 y.min=0 y.max=55
+    //% del.shadow="toggleYesNo"
     //% inlineInputMode=inline
     export function writeImageOLED(im: Image, x: number, y: number, del = false) {
         for (let iy = 0; iy <= im.height() - 1; iy++) {
@@ -24,7 +25,7 @@ namespace matrix {
 
 
 
-    //% group="Matrix" subcategory=Bilder
+    //% group="Image Objekte" subcategory=Bilder
     //% block="Bild 8x8" weight=8
     //% imageLiteral=1 imageLiteralColumns=8 imageLiteralRows=8
     //% shim=images::createImage
@@ -33,7 +34,7 @@ namespace matrix {
         return im
     }
 
-    //% group="Matrix" subcategory=Bilder
+    //% group="Image Objekte" subcategory=Bilder
     //% block="Bild 16x16" weight=7
     //% imageLiteral=1 imageLiteralColumns=16 imageLiteralRows=16
     //% shim=images::createImage
@@ -42,7 +43,7 @@ namespace matrix {
         return im
     }
 
-    //% group="Matrix" subcategory=Bilder
+    //% group="Image Objekte" subcategory=Bilder
     //% block="Bild 32x32" weight=6
     //% imageLiteral=1 imageLiteralColumns=32 imageLiteralRows=32
     //% shim=images::createImage

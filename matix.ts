@@ -139,7 +139,7 @@ https://files.seeedstudio.com/wiki/Grove-OLED-Display-1.12-(SH1107)_V3.0/res/SH1
     }
 
     //% group="Matrix im Speicher"
-    //% block="get Pixel x %x y %y" weight=6
+    //% block="get Pixel x %x y %y" weight=7
     export function getPixel(x: number, y: number) {
         return (qArray[y >> 3][cOffset + x] & (2 ** (y & 7))) != 0
     }
@@ -147,8 +147,8 @@ https://files.seeedstudio.com/wiki/Grove-OLED-Display-1.12-(SH1107)_V3.0/res/SH1
 
 
     //% group="Matrix im Speicher"
-    //% block="Linie x0 %x0 y0 %y0  x1 %x1 y1 %y1 || pixel %pixel" weight=3
-    //% pixel.defl=1
+    //% block="Linie von x %x0 y %y0 bis x %x1 y %y1 || Pixel %pixel" weight=3
+    //% pixel.shadow="toggleOnOff" pixel.defl=1
     //% inlineInputMode=inline
     export function line(x0: number, y0: number, x1: number, y1: number, pixel?: boolean) {
         // https://de.wikipedia.org/wiki/Bresenham-Algorithmus
@@ -166,8 +166,8 @@ https://files.seeedstudio.com/wiki/Grove-OLED-Display-1.12-(SH1107)_V3.0/res/SH1
     }
 
     //% group="Matrix im Speicher"
-    //% block="Kreis Mittelpunkt x %x0 y %y0 Radius %radius || pixel %pixel" weight=2
-    //% pixel.defl=1
+    //% block="Kreis Mittelpunkt x %x0 y %y0 Radius %radius || Pixel %pixel" weight=2
+    //% pixel.shadow="toggleOnOff" pixel.defl=1
     //% inlineInputMode=inline
     export function rasterCircle(x0: number, y0: number, radius: number, pixel?: boolean) {
         // https://de.wikipedia.org/wiki/Bresenham-Algorithmus

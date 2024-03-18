@@ -1,7 +1,7 @@
 input.onButtonEvent(Button.A, input.buttonEventClick(), function () {
     matrix.rasterCircle(64, 64, 32)
     matrix.rasterCircle(64, 64, 34)
-    matrix.line(10, 40, 20, 30, false)
+    matrix.line(10, 60, 100, 99, true)
     matrix.writeDisplay()
 })
 input.onButtonEvent(Button.AB, input.buttonEventClick(), function () {
@@ -16,7 +16,7 @@ input.onButtonEvent(Button.AB, input.buttonEventClick(), function () {
     }
 })
 input.onButtonEvent(Button.B, input.buttonEventClick(), function () {
-    matrix.clearMatrix(0, 15)
+    matrix.clearMatrix()
     i1 = matrix.matrix16x16(`
         . . . . . . . . . . . . . . . .
         . . . . . . . . . . . . . . . .
@@ -35,8 +35,43 @@ input.onButtonEvent(Button.B, input.buttonEventClick(), function () {
         . . . . . . # # # # . . # # . .
         . . . . . . . . . . # # # # . .
         `)
-    matrix.writeImageOLED(i1, 0, 0)
-    matrix.writeDisplay(0, 15)
+    matrix.writeImageOLED(i1, 5, 15)
+    i2 = matrix.matrix32x32(`
+        . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+        . . . . . . . # # # . # # # # . . . . . . . . . . . . . . . . .
+        . . . . . # # . . . . # # # # # # # # # . . . . . . . . . . . .
+        . . . . . . . . # # . # # # # # # # # # # # . . . . . . . . . .
+        . . . . . . . . . . . # # # # # # # # # # . # . . . . . . . . .
+        . . . . . . . . . . # # # # # # # # # # # # . . . . . . . . . .
+        . . . . . . . # # . # . # # # # # # # # . . . . . . . . . . . .
+        . . . . . . . # . # # . # # # # # # # # . . . . . . . . . . . .
+        . . . . . . . # . . # # # # # # # # # # . . . . . . . . . . . .
+        # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+        . . . . . . . . # . . . . . . . # . . . . . . . . . . . . . . #
+        . . . . . . . . . . . . . . . . . . . . . . . . # # # # # # . #
+        . . . . . . . . . # . . . . . . . . . . . . . # . . . . . . . #
+        . . . . . . . . . . # . . . . . . . . . . . # . . . . . . . . #
+        . . . . . . . . . . . . . . . . . . . . . # # . . . . . . . . #
+        . . . . . . . . . . . # . . . . . . . . . # . . . . . . . . . #
+        . . . . # # . . . . . . # . . . . . . # # . . . . . . . . . . #
+        . . . # # # # . . . . . . # . . . # # . . . . . . . . . . . . #
+        . . . # . . # # . . . . . . . # # . . . . . . . . . . . . . . #
+        . . . . . . . . # . # # . # . . # . . . . . . . . . . . . . . #
+        . . . . . . . . . . . . . . . . . # . . . . . . . . . . . . . #
+        . . . . . . . . . . . . . . . . . . # . . . . . . . . . . . . #
+        . . . # . . . . . . . . . . . . . . . . . . . . . . . . . . . #
+        . . . . # . . . . . . . . . . . . . . . . . . . . . . . . . . #
+        . . . . . # . . . . . . . . . . . . . # . . . . . . . . . . . #
+        . . . . . . # # # . . . . . . . . . . # . . . . . . . . . . . #
+        . . . . . . . . . . # # # . # . # # . . . . . . . . . . . . . .
+        . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+        . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+        . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+        . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+        . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+        `)
+    matrix.writeImageOLED(i2, 0, 32)
+    matrix.writeDisplay()
 })
 input.onButtonEvent(Button.A, input.buttonEventValue(ButtonEvent.Hold), function () {
     matrix.comment("zeichnet Linie im Buffer")
@@ -60,6 +95,7 @@ function Konfiguration () {
     matrix.comment("Code Datei: matrix.ts")
     matrix.comment("Grove - OLED Display 1.12 (SH1107) V3.0 - SPI/IIC -3.3V/5V")
 }
+let i2: Image = null
 let i1: Image = null
 let y = 0
 let x = 0
