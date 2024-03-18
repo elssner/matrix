@@ -5,7 +5,7 @@ namespace matrix {
     // ========== group="Image in Buffer zeichnen" subcategory=Bilder
 
     //% group="Image in Buffer zeichnen" subcategory=Bilder
-    //% block="zeichne Matrix %im x %xpos y %ypos || Pixel löschen %del"
+    //% block="zeichne Matrix %im x %xpos y %ypos || 0-Pixel löschen %del"
     //% x.min=0 x.max=119 y.min=0 y.max=55
     //% inlineInputMode=inline
     export function writeImageOLED(im: Image, x: number, y: number, del = false) {

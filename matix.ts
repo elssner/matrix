@@ -70,9 +70,10 @@ https://files.seeedstudio.com/wiki/Grove-OLED-Display-1.12-(SH1107)_V3.0/res/SH1
     }
 
     //% group="OLED Display"
-    //% block="Matrix auf Display schreiben || from Page %fromPage to Page %toPage" weight=6
+    //% block="Matrix auf Display schreiben || Zeilen von %fromPage bis %toPage" weight=6
     //% fromPage.min=0 fromPage.max=15 fromPage.defl=0
     //% toPage.min=0 toPage.max=15 toPage.defl=15
+    //% expandableArgumentMode="toggle"
     export function writeDisplay(fromPage = 0, toPage = 15) {
         if (fromPage > qArray.length - 1) fromPage = qArray.length - 1
         if (toPage > qArray.length - 1) toPage = qArray.length - 1
@@ -92,10 +93,11 @@ https://files.seeedstudio.com/wiki/Grove-OLED-Display-1.12-(SH1107)_V3.0/res/SH1
     // ========== group="Matrix (Pixel im Speicher)"
 
 
-    //% group="Matrix (Pixel im Speicher)"
-    //% block="Matrix löschen || from Page %fromPage to Page %toPage" weight=3
+    //% group="Matrix im Speicher"
+    //% block="Matrix löschen || Zeilen von %fromPage bis %toPage" weight=9
     //% fromPage.min=0 fromPage.max=15 fromPage.defl=0
     //% toPage.min=0 toPage.max=15 toPage.defl=15
+    //% expandableArgumentMode="toggle"
     export function clearMatrix(fromPage = 0, toPage = 15) {
         if (fromPage > qArray.length - 1) fromPage = qArray.length - 1
         if (toPage > qArray.length - 1) toPage = qArray.length - 1
@@ -123,9 +125,9 @@ https://files.seeedstudio.com/wiki/Grove-OLED-Display-1.12-(SH1107)_V3.0/res/SH1
             bu[cOffset + x] &= ~(2 ** exp)
     } */
 
-    //% group="Pixel (Buffer)"
-    //% block weight=8
-    //% pixel.defl=1
+    //% group="Matrix im Speicher"
+    //% block="set Pixel x %x y %y %pixel" weight=8
+    //% pixel.shadow="toggleOnOff" pixel.defl=1
     export function setPixel(x: number, y: number, pixel: boolean) {
         if (between(x, 0, cx - 1) && between(y, 0, qArray.length * 8 - 1)) {
             let exp = y & 7 // bitwise AND letze 3 Bit = 0..7
@@ -136,15 +138,15 @@ https://files.seeedstudio.com/wiki/Grove-OLED-Display-1.12-(SH1107)_V3.0/res/SH1
         }
     }
 
-    //% group="Pixel (Buffer)"
-    //% block weight=6
+    //% group="Matrix im Speicher"
+    //% block="get Pixel x %x y %y" weight=6
     export function getPixel(x: number, y: number) {
         return (qArray[y >> 3][cOffset + x] & (2 ** (y & 7))) != 0
     }
 
 
 
-    //% group="Pixel (Buffer)"
+    //% group="Matrix im Speicher"
     //% block="Linie x0 %x0 y0 %y0  x1 %x1 y1 %y1 || pixel %pixel" weight=3
     //% pixel.defl=1
     //% inlineInputMode=inline
@@ -163,7 +165,7 @@ https://files.seeedstudio.com/wiki/Grove-OLED-Display-1.12-(SH1107)_V3.0/res/SH1
         }
     }
 
-    //% group="Pixel (Buffer)"
+    //% group="Matrix im Speicher"
     //% block="Kreis Mittelpunkt x %x0 y %y0 Radius %radius || pixel %pixel" weight=2
     //% pixel.defl=1
     //% inlineInputMode=inline
@@ -214,7 +216,7 @@ https://files.seeedstudio.com/wiki/Grove-OLED-Display-1.12-(SH1107)_V3.0/res/SH1
     // ========== group="Logik (boolean)" advanced=true
 
     //% group="Logik (boolean)" advanced=true
-    //% block="%i0 between %i1 and %i2"
+    //% block="%i0 zwischen %i1 und %i2"
     export function between(i0: number, i1: number, i2: number): boolean {
         return (i0 >= i1 && i0 <= i2)
     }
