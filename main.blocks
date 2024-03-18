@@ -49,13 +49,13 @@
         . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 
         . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
         `</field></block></value><next><block type="matrix_writeImageOLED" id="6]ULQpxjFbwBWRsFkZtd"><mutation xmlns="http://www.w3.org/1999/xhtml" _expanded="0" _input_init="true"></mutation><value name="im"><block type="variables_get" id="*VI=s|joQ|e[~5V|31T]"><field name="VAR" id="qRF?O|IkkwS|!0b{afzk">i2</field></block></value><value name="xpos"><shadow type="math_number_minmax" id="3tNGP^u,/$St+=`aky?S"><mutation min="0" max="119" label="X" precision="0"></mutation><field name="SLIDER">0</field></shadow></value><value name="ypos"><shadow type="math_number_minmax" id="ElI1{{os7=S#UG^OafN)"><mutation min="0" max="55" label="Y" precision="0"></mutation><field name="SLIDER">32</field></shadow></value><value name="del"><shadow type="toggleYesNo" id="r43eQZ@Y%qnmqgB{eiF%"><field name="yes">false</field></shadow></value><next><block type="variables_set" id="sG8BXC(gx+3~5kf|d8:-"><field name="VAR" id="e+jgQn!Wc,jJ2j($2/Xf">i3</field><value name="VALUE"><shadow type="math_number" id="|ZT58.vKbpfzWl]:su@%"><field name="NUM">0</field></shadow><block type="matrix_matrix64x64" id="d,/.QBB(c[ueM;E=.CO["><field name="LEDS">`
-        # # . # # . . # . # . # . . . . . . . . . . . . . . . . . . # . . # # . # . # # . # . # . # . # . # . # . # . # # # . # # # # # 
-        # . . . . . . . . . . . . . . # . # . . . # . . # . # . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . # 
-        # . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . # 
-        # . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . # 
-        # . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 
-        # . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . # 
-        # . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . # 
+        # # . # # . . # . # . # . . . . . # . . . . # . . # . # . . # . . # # . # . # # . # . # . # . # . # . # . # . # # # . # # # # # 
+        # . . . . . . . . . . . . . . # . # # . # # # . # . # . . . # . . . . . . . . . # . # . # . . . . . . . . . . . . . . . . . . # 
+        # . . . . . # # # # . # # . # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # . # . # # # # # . . . . . . . . . # 
+        # . . . . . . # # . . . # # . . . # # . . . . . . . . . . . . . . . . . # . . . . . . . . . . . . . . . . . . . . . . . . . . # 
+        # . . . . . . . . . . . . . . # # # . . # . # . . # . . . # . . . . # . . . . . # . . . . . . . . . . . . . . . . . . . . . . . 
+        # . . . . . . . . # . . . . . . # . . # . . . . # . # . . . . . . . . . . . # . . . . # . . . . . . . . . . . . . . . . . . . # 
+        # . . . . . . # . . . # . . . . . # . # . # . . . . # . . . . . . # . . # # . . . . . . . . . . . . . . . . . . . . . . . . . # 
         # . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . # 
         # . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . # 
         # . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . # 
