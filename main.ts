@@ -2,7 +2,7 @@ input.onButtonEvent(Button.A, input.buttonEventClick(), function () {
     matrix.rasterCircle(64, 64, 32)
     matrix.rasterCircle(64, 64, 34)
     matrix.line(10, 40, 20, 30)
-    matrix.writeMatrix()
+    matrix.writeDisplay()
 })
 input.onButtonEvent(Button.AB, input.buttonEventClick(), function () {
     matrix.comment("1 Pixel an und zurück lesen")
@@ -14,7 +14,6 @@ input.onButtonEvent(Button.AB, input.buttonEventClick(), function () {
     } else {
         basic.setLedColor(0xff0000)
     }
-    matrix.writeMatrix()
 })
 input.onButtonEvent(Button.B, input.buttonEventClick(), function () {
     matrix.clearMatrix()
@@ -37,7 +36,7 @@ input.onButtonEvent(Button.B, input.buttonEventClick(), function () {
         . . . . . . . . . . # # # # . .
         `)
     matrix.writeImageOLED(i1, 0, 0)
-    matrix.writeMatrix()
+    matrix.writeDisplay()
 })
 input.onButtonEvent(Button.A, input.buttonEventValue(ButtonEvent.Hold), function () {
     matrix.comment("zeichnet Linie im Buffer")
@@ -45,14 +44,14 @@ input.onButtonEvent(Button.A, input.buttonEventValue(ButtonEvent.Hold), function
         matrix.setPixel(Index, 0, false)
     }
     matrix.comment("schreibt 1 mal am Ende auf Display")
-    matrix.writeMatrix()
+    matrix.writeDisplay()
 })
 input.onButtonEvent(Button.B, input.buttonEventValue(ButtonEvent.Hold), function () {
     matrix.comment("löscht Linie im Buffer")
     for (let Index2 = 0; Index2 <= 127; Index2++) {
         matrix.setPixel(Index2, Index2, false)
         matrix.comment("schreibt nach jedem Pixel das ganze Display")
-        matrix.writeMatrix()
+        matrix.writeDisplay()
     }
 })
 function Konfiguration () {

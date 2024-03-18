@@ -1,12 +1,12 @@
 
 //% color=#0000BF icon="\uf108" block="Matrix" weight=20
 namespace matrix
-/* 240306 Lutz Elßner
+/* 240306 240318 Lutz Elßner
 https://wiki.seeedstudio.com/Grove-OLED-Display-1.12-SH1107_V3.0/
 https://files.seeedstudio.com/wiki/Grove-OLED-Display-1.12-(SH1107)_V3.0/res/SH1107V2.1.pdf
 */ {
 
-    // Display (SH1107) kann nur Write und kein Read
+    // OLED Display (SH1107) kann nur I²C Write; keine i2cRead-Funktion erforderlich
     function i2cWriteBuffer(buf: Buffer, repeat: boolean = false) { pins.i2cWriteBuffer(0x3C, buf, repeat) }
 
     const cOffset = 7 // Platz am Anfang des Buffer bevor die cx Pixel kommen
@@ -31,10 +31,10 @@ https://files.seeedstudio.com/wiki/Grove-OLED-Display-1.12-(SH1107)_V3.0/res/SH1
 
 
 
-    // ========== group="beim Start"
+    // ========== group="OLED Display"
 
-    //% group="beim Start"
-    //% block="init Display %pPages invert %pInvert"
+    //% group="OLED Display"
+    //% block="beim Start %pPages invert %pInvert" weight=9
     //% pInvert.shadow="toggleOnOff"
     export function init(pPages: ePages, pInvert = false) {
         let bu: Buffer
@@ -69,24 +69,31 @@ https://files.seeedstudio.com/wiki/Grove-OLED-Display-1.12-(SH1107)_V3.0/res/SH1
         control.waitMicros(100000) // 100ms Delay Recommended
     }
 
+    //% group="OLED Display"
+    //% block="Matrix auf Display schreiben || from Page %fromPage to Page %toPage" weight=6
+    //% fromPage.min=0 fromPage.max=15 fromPage.defl=0
+    //% toPage.min=0 toPage.max=15 toPage.defl=15
+    export function writeDisplay(fromPage = 0, toPage = 15) {
+        if (fromPage > qArray.length - 1) fromPage = qArray.length - 1
+        if (toPage > qArray.length - 1) toPage = qArray.length - 1
+        if (fromPage > toPage) fromPage = toPage
+
+        for (let page = fromPage; page <= toPage; page++) { // qArray.length ist die Anzahl der Pages 8 oder 16
+            i2cWriteBuffer(qArray[page])
+            //control.waitMicros(50)
+        }
+        control.waitMicros(50)
+    }
 
 
-    // ========== group="Matrix (Buffer)"
 
-    // group="Matrix"
-    // block="clearPage || %page" weight=4
-    // page.min=0 page.max=15
-    /* export function clearPage(page?: number) {
-        if (page != undefined)
-            qArray[page].fill(0, cOffset) // löscht Buffer ab 7 bis zum Ende
-        else
-            for (let y = 0; y < qArray.length; y++) {
-                clearPage(y)
-            }
-    } */
 
-    //% group="Matrix (Buffer)"
-    //% block="clear Matrix || from Page %fromPage to Page %toPage" weight=3
+
+    // ========== group="Matrix (Pixel im Speicher)"
+
+
+    //% group="Matrix (Pixel im Speicher)"
+    //% block="Matrix löschen || from Page %fromPage to Page %toPage" weight=3
     //% fromPage.min=0 fromPage.max=15 fromPage.defl=0
     //% toPage.min=0 toPage.max=15 toPage.defl=15
     export function clearMatrix(fromPage = 0, toPage = 15) {
@@ -103,9 +110,9 @@ https://files.seeedstudio.com/wiki/Grove-OLED-Display-1.12-(SH1107)_V3.0/res/SH1
 
     // ========== group="Pixel (Buffer)"
 
-    //% group="Pixel (Buffer)" deprecated=true
-    //% block weight=9
-    export function setPixel1(x: number, y: number, bit: boolean) {
+    // group="Pixel (Buffer)" deprecated=true
+    // block weight=9
+    /* export function setPixel1(x: number, y: number, bit: boolean) {
         let page = Math.trunc(y / 8) // Page = y / 8
         let exp = y % 8 // Rest von Division durch 8 = Bit 0..7 im Byte
         let bu = qArray[page] // 1 Buffer von 16 aus dem Array
@@ -114,7 +121,7 @@ https://files.seeedstudio.com/wiki/Grove-OLED-Display-1.12-(SH1107)_V3.0/res/SH1
             bu[cOffset + x] |= (2 ** exp)
         else
             bu[cOffset + x] &= ~(2 ** exp)
-    }
+    } */
 
     //% group="Pixel (Buffer)"
     //% block weight=8
@@ -192,26 +199,6 @@ https://files.seeedstudio.com/wiki/Grove-OLED-Display-1.12-(SH1107)_V3.0/res/SH1
             setPixel(x0 + y, y0 - x, pixel);
             setPixel(x0 - y, y0 - x, pixel);
         }
-    }
-
-
-
-    // ========== group="Display"
-
-    //% group="Display"
-    //% block="write Matrix || from Page %fromPage to Page %toPage"
-    //% fromPage.min=0 fromPage.max=15 fromPage.defl=0
-    //% toPage.min=0 toPage.max=15 toPage.defl=15
-    export function writeMatrix(fromPage = 0, toPage = 15) {
-        if (fromPage > qArray.length - 1) fromPage = qArray.length - 1
-        if (toPage > qArray.length - 1) toPage = qArray.length - 1
-        if (fromPage > toPage) fromPage = toPage
-
-        for (let page = fromPage; page <= toPage; page++) { // qArray.length ist die Anzahl der Pages 8 oder 16
-            i2cWriteBuffer(qArray[page])
-            //control.waitMicros(50)
-        }
-        control.waitMicros(50)
     }
 
 
